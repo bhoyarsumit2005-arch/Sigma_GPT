@@ -1,7 +1,15 @@
 .chatWindow {
+<<<<<<< HEAD
+    position: relative;
+    background-color: #212121;
+    height: 100vh;
+    flex: 1;
+    min-width: 0;
+=======
     background-color: #212121;
     height: 100vh;
     width: 100%;
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -11,13 +19,33 @@
 
 /* navbar */
 
+<<<<<<< HEAD
+.navbar{
+=======
 .navbar {
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     width: 100%;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+<<<<<<< HEAD
+.navbar span{
+    margin: 1rem 2rem;
+}
+
+.userIconDiv{
+    margin: 1rem 2rem;
+    position: relative;
+    width: fit-content;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.userIcon{
+    background: #339cff;
+=======
 .navbar span {
     margin: 1rem 2rem;
 }
@@ -28,6 +56,7 @@
 
 .userIcon {
     background-color: #339cff;
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     height: 25px;
     width: 25px;
     border-radius: 50%;
@@ -38,15 +67,39 @@
 }
 
 /* chat input */
+<<<<<<< HEAD
+
+.errorBanner{
+    width: 100%;
+    max-width: 700px;
+    background: rgba(248, 113, 113, 0.12);
+    border: 1px solid rgba(248, 113, 113, 0.4);
+    color: #f87171;
+    border-radius: 10px;
+    padding: 0.8rem 1rem;
+    font-size: 0.85rem;
+    text-align: center;
+}
+
+.chatInput{
+    width: 100%;
+    display: flex;
+   
+=======
 .chatInput {
     width: 100%;
     display: flex;
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
+<<<<<<< HEAD
+.inputBox{
+=======
 .inputBox {
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     width: 100%;
     position: relative;
     max-width: 700px;
@@ -55,6 +108,26 @@
     align-items: center;
 }
 
+<<<<<<< HEAD
+input{
+    width: 100%;
+    border: none;
+    background: rgba(255,255,255,0.05);
+    padding: 20px;
+    font-size: 0.8rem;
+    border-radius: 14px;
+    box-shadow: rgba(0,0,0,0.05) 0 54px 55px,
+                rgba(0,0,0,0.05) 0 -12px 30px,
+                rgba(0,0,0,0.05) 0 4px 6px,
+                rgba(0,0,0,0.05) 0 12px 3px,
+                rgba(0,0,0,0.05) 0 -3px 5px;
+}
+
+input:focus{
+    outline: none;
+}
+#submit{
+=======
 input {
     width: 100%;
     border: none;
@@ -74,12 +147,56 @@ input:focus {
 }
 
 #submit {
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     cursor: pointer;
     height: 35px;
     width: 35px;
     font-size: 20px;
     position: absolute;
     right: 15px;
+<<<<<<< HEAD
+    align-items: center;
+    display: flex;
+    justify-content: center;
+}
+
+#submit i:hover{
+    color: #fff;
+}
+
+
+.info{
+    font-size: 0.8rem;
+    padding: 2rem;
+    color: #b4b4b4;
+}
+/* 
+.dropDown{
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: max-content;
+
+    background-color: #323232;
+    padding: 0.3rem 0.5rem;
+    border-radius: 6px;
+    text-align: left;
+    z-index: 1000;
+    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.dropDownItem {
+    font-size: 0.9rem;
+    margin: 0.3rem 0rem;
+    padding: 0.5rem 1rem;
+}
+
+.dropDownItem:hover{
+    background-color: rgba(180,180,180,0.1);
+    border-radius: 6px;
+} */
+
+=======
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,6 +213,7 @@ input:focus {
 }
 
 /* dropdown css */
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
 
 .dropDown {
     position: absolute;
@@ -122,4 +240,8 @@ input:focus {
 .dropDownItem:hover {
     background-color: rgba(180, 180, 180, 0.1);
     border-radius: 6px;
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96

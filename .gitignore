@@ -1,8 +1,25 @@
-# macOS system files
-.DS_Store
-
-# Node.js dependencies
+# dependencies
 node_modules/
 
-# Environment variables
+# env / secrets
 .env
+.env.local
+.env.*.local
+
+# build output
+dist/
+Frontend/dist/
+
+# logs
+*.log
+npm-debug.log*
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# temp files from tooling
+.mdt.mjs
+.cdp.mjs
