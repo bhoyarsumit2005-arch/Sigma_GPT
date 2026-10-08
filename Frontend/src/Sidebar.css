@@ -3,21 +3,13 @@
     color: #b4b4b4;
     height: 100vh;
     width: 320px;
-<<<<<<< HEAD
     flex: 0 0 320px;
-=======
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-<<<<<<< HEAD
 button{
-=======
-
-button {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -25,19 +17,11 @@ button {
     padding: 10px;
     border-radius: 5px;
     background-color: transparent;
-<<<<<<< HEAD
    border: solid 0.5px rgba(100,100,100,0.5); 
    cursor: pointer;
 }
 
 .logo{
-=======
-    border: solid 0.5px rgba(255, 255, 255, 0.5);
-    cursor: pointer;
-}
-
-.logo {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     height: 25px;
     width: 25px;
     background-color: #fff;
@@ -45,7 +29,6 @@ button {
     object-fit: cover;
 }
 
-<<<<<<< HEAD
 
 
 button span{
@@ -64,23 +47,6 @@ button:hover {
 }
 
 .history li{
-=======
-button span {
-    font-size: 20px;
-}
-
-button:hover {
-    background-color: rgba(180, 180, 180, 0.05);
-}
-
-.history {
-    margin: 10px;
-    padding: 10px;
-    height: 100%;
-}
-
-.history li {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     list-style-type: none;
     cursor: pointer;
     padding: 2px 5px;
@@ -89,30 +55,16 @@ button:hover {
     border: solid 10px transparent;
     position: relative;
 }
-<<<<<<< HEAD
 .history li:hover {
     background-color: rgba(100,100,100,0.05);
     border-radius: 10px;
 }
 .sign{
-=======
-
-.history li:hover {
-    background-color: rgba(180, 180, 180, 0.05);
-    border-radius: 10px;
-}
-
-.sign {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     padding: 10px;
     margin: 10px;
     font-size: 14px;
     text-align: center;
-<<<<<<< HEAD
     border-top: solid 0.25px rgba(255,255,255,0.5);
-=======
-    border-top: solid 0.25px rgba(255, 255, 255, 0.5);
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
 }
 
 .fa-trash {
@@ -126,19 +78,11 @@ button:hover {
     color: #fff;
 }
 
-<<<<<<< HEAD
 .fa-trash:hover{
-=======
-.fa-trash:hover {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     color: #f87171 !important;
 }
 
 .highlighted {
-<<<<<<< HEAD
     background-color: rgba(180,180,180,0.05);
-=======
-    background-color: rgba(180, 180, 180, 0.05);
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     border-radius: 10px;
 }

@@ -1,6 +1,5 @@
 import "dotenv/config";
 
-<<<<<<< HEAD
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const GROQ_MODEL = process.env.GROQ_MODEL || "qwen/qwen3.8-27b";
 const GROQ_MAX_TOKENS = parseInt(process.env.GROQ_MAX_TOKENS || "800", 10);
@@ -18,14 +17,10 @@ const getGroqApiKeys = () => {
 };
 
 const tryKey = async (message, apiKey) => {
-=======
-const getOpenAIAPIResponse = async(message) => {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     const options = {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-<<<<<<< HEAD
             "Authorization": `Bearer ${apiKey}`
         },
         body: JSON.stringify({
@@ -81,26 +76,4 @@ const getOpenAIAPIResponse = async (message) => {
 
     throw new Error(`All Groq API keys failed — last error: ${lastError?.message || "unknown"}`);
 }
-=======
-            "Authorization": `Bearer ${process.env.GROQ_API_KEY}`
-        },
-        body: JSON.stringify({
-            model: "openai/gpt-oss-120b",
-            messages: [{
-                role: "user",
-                content: message
-            }]
-        })
-    };
-
-    try {
-        const response = await fetch("https://api.groq.com/openai/v1/chat/completions", options);
-        const data = await response.json();
-        return data.choices[0].message.content;
-    } catch(err) {
-        console.log(err);
-    }
-}
-
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
 export default getOpenAIAPIResponse;

@@ -1,12 +1,6 @@
-<<<<<<< HEAD
 *{
     color: #ececec;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-=======
-* {
-    color: #ececec;
-    font-family: Roboto, 'Open Sans', 'Helvetica Neue', sans-serif;
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
 }
 
 body {
@@ -14,11 +8,7 @@ body {
     padding: 0;
 }
 
-<<<<<<< HEAD
 .app{
-=======
-.app {
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
     background-color: #212121;
     display: flex;
 }

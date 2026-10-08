@@ -1,5 +1,4 @@
 {
-<<<<<<< HEAD
   "type": "module",
   "scripts": {
     "start": "node server.js",
@@ -12,14 +11,5 @@
     "mongoose": "^9.9.4",
     "nodemon": "^3.1.14",
     "openai": "^7.8.0"
-=======
-  "dependencies": {
-    "cors": "^2.8.5",
-    "dotenv": "^16.5.0",
-    "express": "^5.1.0",
-    "mongoose": "^8.16.1",
-    "nodemon": "^3.1.10",
-    "openai": "^5.5.1"
->>>>>>> 32886bdf96754e13bbb2c74c5f9ea3d9abed4a96
   }
 }
