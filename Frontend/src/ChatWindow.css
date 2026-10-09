@@ -1,12 +1,13 @@
 .chatWindow {
     position: relative;
-    background-color: #212121;
+    background:
+        radial-gradient(circle at top, rgba(124, 58, 237, 0.12), transparent 40%),
+        #080b12;
     height: 100vh;
     flex: 1;
     min-width: 0;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
     align-items: center;
     text-align: center;
 }
@@ -18,10 +19,52 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 0 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    background: rgba(8, 11, 18, 0.7);
+    backdrop-filter: blur(10px);
+    z-index: 5;
+    flex-shrink: 0;
 }
 
 .navbar span{
     margin: 1rem 2rem;
+    font-size: 14px;
+    letter-spacing: 0.5px;
+    color: #e5e7eb;
+}
+
+.nav-brand{
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-weight: 600;
+}
+
+.status-dot{
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #34d399;
+    box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse{
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+.nav-tag{
+    font-size: 10px;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #8b8f9a;
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: rgba(255, 255, 255, 0.04);
+    padding: 3px 8px;
+    border-radius: 999px;
 }
 
 .userIconDiv{
@@ -33,9 +76,9 @@
 }
 
 .userIcon{
-    background: #339cff;
-    height: 25px;
-    width: 25px;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    height: 28px;
+    width: 28px;
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -46,15 +89,17 @@
 /* chat input */
 
 .errorBanner{
-    width: 100%;
-    max-width: 700px;
-    background: rgba(248, 113, 113, 0.12);
-    border: 1px solid rgba(248, 113, 113, 0.4);
+    width: calc(100% - 2rem);
+    max-width: 900px;
+    margin-bottom: 10px;
+    background: rgba(248, 113, 113, 0.10);
+    border: 1px solid rgba(248, 113, 113, 0.35);
     color: #f87171;
-    border-radius: 10px;
-    padding: 0.8rem 1rem;
+    border-radius: 12px;
+    padding: 0.7rem 1rem;
     font-size: 0.85rem;
     text-align: center;
+    backdrop-filter: blur(10px);
 }
 
 .chatInput{
@@ -64,29 +109,43 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
+    flex-shrink: 0;
+    padding-bottom: 4px;
+    background: linear-gradient(to top, #080b12 65%, transparent);
 }
 
 .inputBox{
     width: 100%;
     position: relative;
-    max-width: 700px;
+    max-width: 900px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding: 8px 10px;
+    box-sizing: border-box;
+    border-radius: 20px;
+    background: rgba(255, 255, 255, 0.045);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+    transition: border-color 0.2s ease;
+}
+
+.inputBox:focus-within {
+    border-color: rgba(124, 58, 237, 0.55);
 }
 
 input{
     width: 100%;
     border: none;
-    background: rgba(255,255,255,0.05);
-    padding: 20px;
-    font-size: 0.8rem;
-    border-radius: 14px;
-    box-shadow: rgba(0,0,0,0.05) 0 54px 55px,
-                rgba(0,0,0,0.05) 0 -12px 30px,
-                rgba(0,0,0,0.05) 0 4px 6px,
-                rgba(0,0,0,0.05) 0 12px 3px,
-                rgba(0,0,0,0.05) 0 -3px 5px;
+    outline: none;
+    background: transparent;
+    padding: 10px 12px;
+    font-size: 0.9rem;
+    color: #e5e7eb;
+}
+
+input::placeholder {
+    color: #6f7480;
 }
 
 input:focus{
@@ -94,14 +153,31 @@ input:focus{
 }
 #submit{
     cursor: pointer;
-    height: 35px;
-    width: 35px;
-    font-size: 20px;
-    position: absolute;
-    right: 15px;
+    height: 40px;
+    width: 40px;
+    font-size: 17px;
+    flex-shrink: 0;
+    position: static;
     align-items: center;
     display: flex;
     justify-content: center;
+    border: none;
+    border-radius: 14px;
+    color: #fff;
+    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    box-shadow: 0 6px 16px rgba(124, 58, 237, 0.30);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+#submit:hover{
+    transform: translateY(-2px);
+}
+
+#submit:disabled{
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 #submit i:hover{
@@ -110,9 +186,9 @@ input:focus{
 
 
 .info{
-    font-size: 0.8rem;
-    padding: 2rem;
-    color: #b4b4b4;
+    font-size: 0.75rem;
+    padding: 0.7rem 1rem;
+    color: #6f7480;
 }
 /* 
 .dropDown{
@@ -145,25 +221,29 @@ input:focus{
     position: absolute;
     top: 4rem;
     right: 4rem;
-    width: 150px;
+    width: 170px;
 
-    background-color: #323232;
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
+    background: rgba(13, 17, 25, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.10);
+    backdrop-filter: blur(12px);
+    padding: 0.4rem 0.5rem;
+    border-radius: 14px;
     text-align: left;
     z-index: 1000;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
 }
 
 .dropDownItem {
     font-size: 0.9rem;
     margin: 0.3rem 0rem;
-    padding: 0.5rem 0.2rem;
+    padding: 0.5rem 0.7rem;
     cursor: pointer;
+    border-radius: 8px;
+    color: #c7cad1;
 }
 
 
 .dropDownItem:hover {
-    background-color: rgba(180, 180, 180, 0.1);
-    border-radius: 6px;
+    background-color: rgba(124, 58, 237, 0.16);
+    color: #f3f4f6;
 }

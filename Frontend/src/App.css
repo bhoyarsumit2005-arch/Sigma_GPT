@@ -6,9 +6,47 @@
 body {
     margin: 0;
     padding: 0;
+    background-color: #080b12;
+}
+
+#root {
+    height: 100vh;
 }
 
 .app{
-    background-color: #212121;
+    background-color: #080b12;
     display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* ---------- custom scrollbar ---------- */
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(124, 58, 237, 0.45) transparent;
+}
+
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+    background: rgba(124, 58, 237, 0.45);
+    border-radius: 999px;
+    border: 2px solid transparent;
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(124, 58, 237, 0.75);
+    background-clip: padding-box;
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
 }

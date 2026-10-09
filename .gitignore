@@ -23,3 +23,6 @@ Thumbs.db
 # temp files from tooling
 .mdt.mjs
 .cdp.mjs
+
+# generated architecture docs
+docs/architecture/

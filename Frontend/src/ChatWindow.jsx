@@ -2,7 +2,6 @@ import "./ChatWindow.css";
 import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
 import { useContext ,useState} from 'react';
-import {ScaleLoader} from "react-spinners";
 
 
 function ChatWindow() {
@@ -62,7 +61,11 @@ function ChatWindow() {
   return (
     <div className="chatWindow">
       <div className="navbar">
-        <span>SigmaGPT <i className="fa-solid fa-angle-down"></i> </span>
+        <span className="nav-brand">
+          <span className="status-dot"></span>
+          Sigma AI
+          <small className="nav-tag">AI Workspace</small>
+        </span>
         <div className="userIconDiv" onClick={handleProfileClick}>
              <span className="userIcon"><i className="fa-solid fa-user"></i></span>
         </div>
@@ -78,9 +81,7 @@ function ChatWindow() {
         </div>
      }
 
-      <Chat></Chat>
-
-      <ScaleLoader color='#fff' loading={loading}></ScaleLoader>
+      <Chat loading={loading}></Chat>
 
       {
         error && <div className="errorBanner">{error}</div>
@@ -88,15 +89,17 @@ function ChatWindow() {
 
       <div className="chatInput">
         <div className="inputBox">
-          <input placeholder="Ask anything"
+          <input placeholder="Ask Sigma anything..."
           value={prompt}
           onChange={(e) => setPrompt(e.target.value)}
           onKeyDown={(e) => e.key ==='Enter'? getReply() : ''}
           />
-          <div id="submit" onClick={getReply} > <i className="fa-solid fa-paper-plane"></i></div>
+          <button id="submit" onClick={getReply} disabled={!prompt.trim() || loading} aria-label="Send">
+            <i className="fa-solid fa-paper-plane"></i>
+          </button>
         </div>
         <p className="info">
-          SigmaGPT can make mistakes. Check important info . See Cookie Preference.
+          Sigma AI can make mistakes. Check important info.
         </p>
 
       </div>

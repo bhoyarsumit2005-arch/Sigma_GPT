@@ -1,22 +1,22 @@
 import "./Sidebar.css";
 import { useContext, useEffect } from "react";
-import {MyContext} from "./MyContext.jsx";
-import {v1 as uuidv1} from "uuid";
+import { MyContext } from "./MyContext.jsx";
+import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
-  const {allThreads,setAllThreads,currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setError} = useContext(MyContext);
+  const { allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setError } = useContext(MyContext);
 
   const getAllThreads = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/thread");
-      const res =await response.json();
-      const filteredData = res.map(thread =>({threadId: thread.threadId, title: thread.title}));
+      const res = await response.json();
+      const filteredData = res.map(thread => ({ threadId: thread.threadId, title: thread.title }));
       //console.log(filteredData);
       setAllThreads(filteredData);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
-  
+
   };
 
   useEffect(() => {
@@ -43,7 +43,7 @@ function Sidebar() {
       setPrevChats(Array.isArray(res) ? res : []);
       setNewChat(false);
       setReply(null);
-    } catch(err) {
+    } catch (err) {
       console.log(err);
     }
   }
@@ -51,58 +51,75 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/thread/${threadId}`,{method:"DELETE"});
+      const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, { method: "DELETE" });
       const res = await response.json();
       console.log(res);
-    
+
       //updates threads re-render
       setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
 
-      if(threadId === currThreadId) {
+      if (threadId === currThreadId) {
         createNewChat();
       }
 
-    } catch(err){
+    } catch (err) {
       console.log(err);
     }
   }
 
 
   return (
-   <section className="sidebar">
-    {/* new chat button*/}
-    <button  onClick={createNewChat}>
-      <img src="src/assets/blacklogo.png" alt="gpt logo" className="logo"/>
-      
-      <span><i className="fa-solid fa-pen-to-square"></i></span>
-    
-    </button>
-    {/* history */}
-    <ul className="history">
-      {
-        allThreads?.map((thread, idx) => (
-          <li key={idx}
-                  onClick={() => changeThread(thread.threadId)}
-                  className={thread.threadId === currThreadId ? "highlighted": ""}
-          >
-             {thread.title}
-             <i className="fa-solid fa-trash"
-                onClick={(e) => {
-                  e.stopPropagation(); //stop event bubbling
-                  deleteThread(thread.threadId);
-                }}
-             ></i>
-          </li>
-        ))
-      }
-    </ul>
+    <section className="sidebar">
+      {/* branding */}
+      <div className="sigma-logo">
+        <div className="sigma-icon">&#931;</div>
+        <div className="sigma-text">
+          <h2>SIGMA AI</h2>
+          <span>Intelligent Workspace</span>
+        </div>
+      </div>
 
-    {/* sign */}
-    <div className="sign">
-      <p>By Sumit &hearts;</p>
-    </div>
+      {/* new chat button*/}
+      <button className="new-chat-btn" onClick={createNewChat}>
+        <span className="plus">+</span>
+        <div className="new-chat-label">
+          <strong>New Conversation</strong>
+          <small>Start fresh</small>
+        </div>
+      </button>
 
-   </section>
+      {/* history */}
+      <div className="history">
+        <div className="recent-title">RECENT</div>
+        <ul>
+          {
+            allThreads?.map((thread, idx) => (
+              <li key={idx}
+                onClick={() => changeThread(thread.threadId)}
+                className={thread.threadId === currThreadId ? "highlighted" : ""}
+              >
+                <span className="thread-dot"></span>
+                <span className="thread-title">{thread.title}</span>
+                <i className="fa-solid fa-trash"
+                  onClick={(e) => {
+                    e.stopPropagation(); //stop event bubbling
+                    deleteThread(thread.threadId);
+                  }}
+                ></i>
+              </li>
+            ))
+          }
+        </ul>
+
+      </div>
+
+      {/* sign */}
+      <div className="sign">
+
+        <p>By Sumit &hearts;</p>
+      </div>
+
+    </section>
   )
 }
 
