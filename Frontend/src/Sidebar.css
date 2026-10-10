@@ -199,25 +199,6 @@
     color: #8b8f9a;
 }
 
-.settings-btn {
-    width: 100%;
-    display: flex;
-    align-items: center;
-    gap: 12px;
-
-    padding: 12px 14px;
-
-    border: 1px solid transparent;
-    border-radius: 12px;
-
-    background: transparent;
-    color: #a1a1aa;
-
-    cursor: pointer;
-
-    transition: all 0.2s ease;
-}
-
 .sign p {
     margin: 4px 0;
 }
