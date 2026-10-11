@@ -5,6 +5,8 @@ import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
   const { allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setError } = useContext(MyContext);
+  const { user, logout } = useContext(MyContext);
+
 
   const getAllThreads = async () => {
     try {
@@ -113,10 +115,31 @@ function Sidebar() {
 
       </div>
 
-      {/* sign */}
-      <div className="sign">
+      {/* profile */}
+      <div className="profile-card">
 
-        <p>By Sumit &hearts;</p>
+        <div className="profile-avatar">
+          {user?.name?.charAt(0).toUpperCase() || "S"}
+        </div>
+
+        <div className="profile-info">
+          <span className="profile-name">
+            {user?.name || "Sigma User"}
+          </span>
+
+          <span className="profile-role">
+            AI Workspace
+          </span>
+        </div>
+
+        <button
+          className="profile-logout"
+          onClick={logout}
+          title="Log out"
+        >
+          &#8617;
+        </button>
+
       </div>
 
     </section>
