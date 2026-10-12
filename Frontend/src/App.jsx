@@ -20,6 +20,18 @@ function App() {
   const [user, setUser] = useState(null);
   const [checkingAuth, setCheckingAuth] = useState(true);
 
+  //wipes every cached piece of chat state, so nothing from the previous
+  //account can show up after logout or after another user logs in
+  function clearChatState() {
+    setPrompt("");
+    setReply(null);
+    setCurrThreadId(uuidv1());
+    setPrevChats([]);
+    setNewChat(true);
+    setAllThreads([]);
+    setError(null);
+  }
+
 
   useEffect(() => {
     async function checkSession() {
@@ -52,8 +64,21 @@ function App() {
         credentials: "include",
       });
     } finally {
+      clearChatState();
       setUser(null);
     }
+  }
+
+  //called by any API that answers 401: the cookie is gone or invalid,
+  //drop to the login screen without keeping any private data around
+  function sessionExpired() {
+    clearChatState();
+    setUser(null);
+  }
+
+  function handleAuthenticated(nextUser) {
+    clearChatState();
+    setUser(nextUser);
   }
 
   const providerValues = {
@@ -65,7 +90,8 @@ function App() {
     allThreads, setAllThreads,
     error, setError,
     user,
-    logout
+    logout,
+    sessionExpired
   };
 
   if (checkingAuth) {
@@ -73,7 +99,7 @@ function App() {
   }
 
   if (!user) {
-    return <Auth onAuthenticated={setUser} />;
+    return <Auth onAuthenticated={handleAuthenticated} />;
   }
   return (
     <div className='app'>

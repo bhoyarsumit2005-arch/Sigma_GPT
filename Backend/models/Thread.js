@@ -19,8 +19,15 @@ const MessageSchema = new mongoose.Schema({
 const ThreadSchema = new mongoose.Schema({
     threadId: {
         type: String,
+        required: true
+    },
+    //owner of the thread, taken from the verified JWT (req.user.id),
+    //never from the frontend request body
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
         required: true,
-        unique: true
+        index: true
     },
     title: {
         type: String,
@@ -36,5 +43,9 @@ const ThreadSchema = new mongoose.Schema({
         default: Date.now
     }
 });
+
+//threadId only needs to be unique inside one account,
+//so every lookup is done with { threadId, userId }
+ThreadSchema.index({ userId: 1, threadId: 1 }, { unique: true });
 
 export default mongoose.model("Thread", ThreadSchema);

@@ -5,13 +5,25 @@ import { v1 as uuidv1 } from "uuid";
 
 function Sidebar() {
   const { allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setError } = useContext(MyContext);
-  const { user, logout } = useContext(MyContext);
+  const { user, logout, sessionExpired } = useContext(MyContext);
 
 
   const getAllThreads = async () => {
     try {
-      const response = await fetch("http://localhost:8080/api/thread");
+      const response = await fetch("http://localhost:8080/api/thread", { credentials: "include" });
+
+      if (response.status === 401) {
+        sessionExpired();
+        return;
+      }
+
       const res = await response.json();
+
+      if (!response.ok || !Array.isArray(res)) {
+        console.log(res?.error || "Failed to load conversations");
+        return;
+      }
+
       const filteredData = res.map(thread => ({ threadId: thread.threadId, title: thread.title }));
       //console.log(filteredData);
       setAllThreads(filteredData);
@@ -23,7 +35,7 @@ function Sidebar() {
 
   useEffect(() => {
     getAllThreads();
-  }, [currThreadId])
+  }, [currThreadId, user?.id])
 
   const createNewChat = () => {
     setNewChat(true);
@@ -35,13 +47,26 @@ function Sidebar() {
   }
 
   const changeThread = async (newThreadId) => {
-    setCurrThreadId(newThreadId);
     setError(null);
 
     try {
-      const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`);
+      const response = await fetch(`http://localhost:8080/api/thread/${newThreadId}`, { credentials: "include" });
+
+      if (response.status === 401) {
+        sessionExpired();
+        return;
+      }
+
       const res = await response.json();
-      console.log(res);
+
+      //404 means the thread does not exist or belongs to someone else
+      if (!response.ok) {
+        setError(res.error || "Could not open this conversation.");
+        return;
+      }
+
+      //only switch once the backend confirmed ownership
+      setCurrThreadId(newThreadId);
       setPrevChats(Array.isArray(res) ? res : []);
       setNewChat(false);
       setReply(null);
@@ -53,9 +78,19 @@ function Sidebar() {
 
   const deleteThread = async (threadId) => {
     try {
-      const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, { method: "DELETE" });
+      const response = await fetch(`http://localhost:8080/api/thread/${threadId}`, { method: "DELETE", credentials: "include" });
+
+      if (response.status === 401) {
+        sessionExpired();
+        return;
+      }
+
       const res = await response.json();
-      console.log(res);
+
+      if (!response.ok) {
+        setError(res.error || "Could not delete this conversation.");
+        return;
+      }
 
       //updates threads re-render
       setAllThreads(prev => prev.filter(thread => thread.threadId !== threadId));
