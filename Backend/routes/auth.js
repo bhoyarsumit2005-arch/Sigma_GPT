@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import User from "../models/User.js";
 import requireAuth from "../middleware/requireAuth.js";
+import { authLimiter } from "../middleware/rateLimit.js";
 
 const router = express.Router();
 
@@ -34,8 +35,8 @@ function publicUser(user) {
     };
 }
 
-// SIGNUP
-router.post("/signup", async (req, res) => {
+// SIGNUP — rate limited: an account is not known yet, so the key is the IP
+router.post("/signup", authLimiter, async (req, res) => {
     try {
         const { name, email, password } = req.body;
 
@@ -110,8 +111,8 @@ router.post("/signup", async (req, res) => {
     }
 });
 
-// LOGIN
-router.post("/login", async (req, res) => {
+// LOGIN — rate limited to slow down credential stuffing
+router.post("/login", authLimiter, async (req, res) => {
     try {
         const { email, password } = req.body;
 
