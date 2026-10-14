@@ -62,6 +62,19 @@ export const authLimiter = rateLimit({
     ),
 });
 
+//tight budget for high-risk account operations (password change, account
+//deletion). requireAuth runs first, so the key is the authenticated account.
+export const sensitiveLimiter = rateLimit({
+    windowMs: 15 * MINUTE,
+    limit: intFromEnv("RATE_LIMIT_SENSITIVE", 10),
+    ...sharedOptions,
+    handler: jsonHandler(
+        "Too many attempts. Please wait a few minutes and try again."
+    ),
+    keyGenerator: (req) =>
+        req.user?.id ? req.user.id : ipKeyGenerator(req.ip),
+});
+
 //per-account budget for AI calls: one user hammering /api/chat cannot spend
 //the quota of everybody else (requireAuth runs first, so req.user is set)
 export const chatLimiter = rateLimit({

@@ -1,9 +1,7 @@
 .sidebar {
-    background-color: #0d1119;
-    background-image: radial-gradient(circle at top left,
-            rgba(124, 58, 237, 0.10),
-            transparent 45%);
-    color: #b4b4b4;
+    background-color: var(--sidebar-bg);
+    background-image: var(--sidebar-glow);
+    color: var(--text-2);
     height: 100vh;
     width: 260px;
     flex: 0 0 260px;
@@ -12,8 +10,9 @@
     gap: 14px;
     padding: 16px 12px;
     box-sizing: border-box;
-    border-right: 1px solid rgba(255, 255, 255, 0.06);
+    border-right: 1px solid var(--border-soft);
     overflow: hidden;
+    transition: background-color 0.2s ease;
 }
 
 /* ---------- branding ---------- */
@@ -22,7 +21,7 @@
     align-items: center;
     gap: 12px;
     padding: 4px 6px 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    border-bottom: 1px solid var(--border-soft);
 }
 
 .sigma-icon {
@@ -35,7 +34,7 @@
     font-size: 22px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     box-shadow: 0 6px 18px rgba(124, 58, 237, 0.35);
     flex-shrink: 0;
 }
@@ -44,12 +43,12 @@
     margin: 0;
     font-size: 16px;
     letter-spacing: 1.5px;
-    color: #f3f4f6;
+    color: var(--text-strong);
 }
 
 .sigma-text span {
     font-size: 11px;
-    color: #8b8f9a;
+    color: var(--text-muted);
     letter-spacing: 0.4px;
 }
 
@@ -61,10 +60,10 @@
     width: 100%;
     margin: 0;
     padding: 10px 12px;
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    border: 1px solid var(--border-strong);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.04);
-    color: #ececec;
+    background: var(--surface-2);
+    color: var(--text);
     cursor: pointer;
     text-align: left;
     transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
@@ -80,7 +79,7 @@
     font-size: 20px;
     font-weight: 600;
     color: #fff;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     flex-shrink: 0;
 }
 
@@ -93,18 +92,18 @@
 .new-chat-label strong {
     font-size: 13.5px;
     font-weight: 600;
-    color: #f3f4f6;
+    color: var(--text-strong);
 }
 
 .new-chat-label small {
     font-size: 11px;
-    color: #8b8f9a;
+    color: var(--text-muted);
 }
 
 .new-chat-btn:hover {
     transform: translateY(-2px);
     border-color: rgba(124, 58, 237, 0.55);
-    background: rgba(124, 58, 237, 0.12);
+    background: var(--accent-bg);
 }
 
 /* ---------- recent history ---------- */
@@ -119,7 +118,7 @@
 .recent-title {
     font-size: 11px;
     letter-spacing: 2px;
-    color: #6f7480;
+    color: var(--text-faint);
     padding: 6px 8px;
 }
 
@@ -142,21 +141,21 @@
     font-size: 13.5px;
     border-radius: 10px;
     position: relative;
-    color: #c7cad1;
+    color: var(--text-2);
     border: 1px solid transparent;
     transition: background 0.2s ease, border-color 0.2s ease;
 }
 
 .history li:hover {
-    background-color: rgba(255, 255, 255, 0.05);
-    border-color: rgba(255, 255, 255, 0.08);
+    background-color: var(--hover);
+    border-color: var(--border-soft);
 }
 
 .thread-dot {
     width: 7px;
     height: 7px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     flex-shrink: 0;
 }
 
@@ -168,10 +167,10 @@
 }
 
 .highlighted {
-    background-color: rgba(124, 58, 237, 0.16);
-    border-color: rgba(124, 58, 237, 0.40);
+    background-color: var(--accent-bg);
+    border-color: var(--accent-border);
     border-radius: 10px;
-    color: #f3f4f6;
+    color: var(--text-strong);
 }
 
 .fa-trash {
@@ -183,11 +182,11 @@
 
 .history li:hover .fa-trash {
     opacity: 1;
-    color: #fff;
+    color: var(--text-strong);
 }
 
 .fa-trash:hover {
-    color: #f87171 !important;
+    color: var(--danger) !important;
 }
 
 /* ---------- footer ---------- */
@@ -195,8 +194,8 @@
     padding-top: 10px;
     font-size: 12.5px;
     text-align: center;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    color: #8b8f9a;
+    border-top: 1px solid var(--border-soft);
+    color: var(--text-muted);
 }
 
 .sign p {
@@ -209,9 +208,9 @@
     align-items: center;
     gap: 10px;
     padding: 10px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--border-soft);
     border-radius: 14px;
-    background: rgba(255, 255, 255, 0.04);
+    background: var(--surface-2);
 }
 
 .profile-avatar {
@@ -221,10 +220,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 700;
     color: #fff;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     flex-shrink: 0;
 }
 
@@ -239,7 +238,7 @@
 .profile-name {
     font-size: 13.5px;
     font-weight: 600;
-    color: #f3f4f6;
+    color: var(--text-strong);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
@@ -247,9 +246,13 @@
 
 .profile-role {
     font-size: 11px;
-    color: #8b8f9a;
+    color: var(--text-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
+.profile-settings,
 .profile-logout {
     width: 32px;
     height: 32px;
@@ -263,16 +266,26 @@
     border-radius: 9px;
 
     background: transparent;
-    color: #a1a1aa;
+    color: var(--text-muted);
 
-    font-size: 18px;
+    font-size: 15px;
     cursor: pointer;
 
     transition: all 0.2s ease;
 }
 
+.profile-settings:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent-border);
+    color: var(--accent-soft);
+}
+
+.profile-logout {
+    font-size: 18px;
+}
+
 .profile-logout:hover {
     background: rgba(239, 68, 68, 0.12);
     border-color: rgba(239, 68, 68, 0.2);
-    color: #f87171;
+    color: var(--danger);
 }

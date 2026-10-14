@@ -2,10 +2,11 @@ import "./Sidebar.css";
 import { useContext, useEffect } from "react";
 import { MyContext } from "./MyContext.jsx";
 import { v1 as uuidv1 } from "uuid";
+import { getInitials } from "./theme.js";
 
 function Sidebar() {
   const { allThreads, setAllThreads, currThreadId, setNewChat, setPrompt, setReply, setCurrThreadId, setPrevChats, setError } = useContext(MyContext);
-  const { user, logout, sessionExpired } = useContext(MyContext);
+  const { user, logout, sessionExpired, openSettings } = useContext(MyContext);
 
 
   const getAllThreads = async () => {
@@ -154,7 +155,7 @@ function Sidebar() {
       <div className="profile-card">
 
         <div className="profile-avatar">
-          {user?.name?.charAt(0).toUpperCase() || "S"}
+          {getInitials(user?.name)}
         </div>
 
         <div className="profile-info">
@@ -163,14 +164,24 @@ function Sidebar() {
           </span>
 
           <span className="profile-role">
-            AI Workspace
+            {user?.email || "AI Workspace"}
           </span>
         </div>
+
+        <button
+          className="profile-settings"
+          onClick={openSettings}
+          title="Settings"
+          aria-label="Open settings"
+        >
+          <i className="fa-solid fa-gear"></i>
+        </button>
 
         <button
           className="profile-logout"
           onClick={logout}
           title="Log out"
+          aria-label="Log out"
         >
           &#8617;
         </button>

@@ -4,9 +4,34 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    
+
+    <!-- Paint the theme before the bundle loads so there is no flash of the
+         wrong theme. The cached preference lives in localStorage and is later
+         reconciled with the value stored on the account. -->
+    <style>
+      html { background-color: #080b12; }
+      html[data-theme="light"] { background-color: #eef0f7; }
+    </style>
+    <script>
+      (function () {
+        try {
+          var pref = localStorage.getItem("sigma-theme") || "dark";
+          var resolved = pref;
+          if (pref === "system") {
+            resolved = window.matchMedia("(prefers-color-scheme: light)").matches
+              ? "light"
+              : "dark";
+          }
+          if (resolved !== "light") resolved = "dark";
+          document.documentElement.setAttribute("data-theme", resolved);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+        }
+      })();
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css" integrity="sha512-QeR2VH+lsBE5LSAe1Q5EnTBbe7XTBubt8dG93Y7gidSgdMCr8nVqKcfKAMyN96SV8KDbZVTDXChatu5G2KQGzg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-    
+
     <title>SigmaGPT</title>
   </head>
   <body>

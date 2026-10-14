@@ -1,8 +1,6 @@
 .chatWindow {
     position: relative;
-    background:
-        radial-gradient(circle at top, rgba(124, 58, 237, 0.12), transparent 40%),
-        #080b12;
+    background: var(--bg-glow), var(--bg);
     height: 100vh;
     flex: 1;
     min-width: 0;
@@ -10,6 +8,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
+    transition: background-color 0.2s ease;
 }
 
 /* navbar */
@@ -20,8 +19,8 @@
     justify-content: space-between;
     align-items: center;
     padding: 0 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    background: rgba(8, 11, 18, 0.7);
+    border-bottom: 1px solid var(--border-soft);
+    background: var(--nav-bg);
     backdrop-filter: blur(10px);
     z-index: 5;
     flex-shrink: 0;
@@ -31,7 +30,7 @@
     margin: 1rem 2rem;
     font-size: 14px;
     letter-spacing: 0.5px;
-    color: #e5e7eb;
+    color: var(--text-2);
 }
 
 .nav-brand{
@@ -45,7 +44,7 @@
     width: 8px;
     height: 8px;
     border-radius: 50%;
-    background: #34d399;
+    background: var(--success);
     box-shadow: 0 0 8px rgba(52, 211, 153, 0.8);
     animation: pulse 2s ease-in-out infinite;
 }
@@ -60,9 +59,9 @@
     font-weight: 500;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #8b8f9a;
-    border: 1px solid rgba(255, 255, 255, 0.10);
-    background: rgba(255, 255, 255, 0.04);
+    color: var(--text-muted);
+    border: 1px solid var(--border-strong);
+    background: var(--surface-2);
     padding: 3px 8px;
     border-radius: 999px;
 }
@@ -76,7 +75,7 @@
 }
 
 .userIcon{
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     height: 28px;
     width: 28px;
     border-radius: 50%;
@@ -84,6 +83,7 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    color: #fff;
 }
 
 /* chat input */
@@ -92,9 +92,9 @@
     width: calc(100% - 2rem);
     max-width: 900px;
     margin-bottom: 10px;
-    background: rgba(248, 113, 113, 0.10);
-    border: 1px solid rgba(248, 113, 113, 0.35);
-    color: #f87171;
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    color: var(--danger-text);
     border-radius: 12px;
     padding: 0.7rem 1rem;
     font-size: 0.85rem;
@@ -105,13 +105,13 @@
 .chatInput{
     width: 100%;
     display: flex;
-   
+
     flex-direction: column;
     justify-content: center;
     align-items: center;
     flex-shrink: 0;
     padding-bottom: 4px;
-    background: linear-gradient(to top, #080b12 65%, transparent);
+    background: linear-gradient(to top, var(--bg) 65%, transparent);
 }
 
 .inputBox{
@@ -124,8 +124,8 @@
     padding: 8px 10px;
     box-sizing: border-box;
     border-radius: 20px;
-    background: rgba(255, 255, 255, 0.045);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: var(--surface-3);
+    border: 1px solid var(--border-strong);
     backdrop-filter: blur(12px);
     transition: border-color 0.2s ease;
 }
@@ -141,11 +141,11 @@ input{
     background: transparent;
     padding: 10px 12px;
     font-size: 0.9rem;
-    color: #e5e7eb;
+    color: var(--input-text);
 }
 
 input::placeholder {
-    color: #6f7480;
+    color: var(--placeholder);
 }
 
 input:focus{
@@ -164,7 +164,7 @@ input:focus{
     border: none;
     border-radius: 14px;
     color: #fff;
-    background: linear-gradient(135deg, #7c3aed, #06b6d4);
+    background: var(--grad);
     box-shadow: 0 6px 16px rgba(124, 58, 237, 0.30);
     transition: transform 0.2s ease, opacity 0.2s ease;
 }
@@ -188,49 +188,23 @@ input:focus{
 .info{
     font-size: 0.75rem;
     padding: 0.7rem 1rem;
-    color: #6f7480;
+    color: var(--text-faint);
 }
-/* 
-.dropDown{
-    position: absolute;
-    top: 100%;
-    right: 0;
-    width: max-content;
-
-    background-color: #323232;
-    padding: 0.3rem 0.5rem;
-    border-radius: 6px;
-    text-align: left;
-    z-index: 1000;
-    box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.1);
-}
-
-.dropDownItem {
-    font-size: 0.9rem;
-    margin: 0.3rem 0rem;
-    padding: 0.5rem 1rem;
-}
-
-.dropDownItem:hover{
-    background-color: rgba(180,180,180,0.1);
-    border-radius: 6px;
-} */
-
 
 .dropDown {
     position: absolute;
     top: 4rem;
     right: 4rem;
-    width: 170px;
+    width: 180px;
 
-    background: rgba(13, 17, 25, 0.95);
-    border: 1px solid rgba(255, 255, 255, 0.10);
+    background: var(--menu-bg);
+    border: 1px solid var(--border-strong);
     backdrop-filter: blur(12px);
     padding: 0.4rem 0.5rem;
     border-radius: 14px;
     text-align: left;
     z-index: 1000;
-    box-shadow: 0 12px 30px rgba(0, 0, 0, 0.45);
+    box-shadow: var(--shadow-menu);
 }
 
 .dropDownItem {
@@ -239,11 +213,14 @@ input:focus{
     padding: 0.5rem 0.7rem;
     cursor: pointer;
     border-radius: 8px;
-    color: #c7cad1;
+    color: var(--text-2);
+    display: flex;
+    align-items: center;
+    gap: 10px;
 }
 
 
 .dropDownItem:hover {
-    background-color: rgba(124, 58, 237, 0.16);
-    color: #f3f4f6;
+    background-color: var(--accent-bg);
+    color: var(--text-strong);
 }

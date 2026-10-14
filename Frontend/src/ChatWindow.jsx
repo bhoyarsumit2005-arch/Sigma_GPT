@@ -5,7 +5,7 @@ import { useContext ,useState} from 'react';
 
 
 function ChatWindow() {
-  const {prompt, setPrompt, setReply, error, setError, currThreadId, setPrevChats, setNewChat, logout, sessionExpired} = useContext(MyContext);
+  const {prompt, setPrompt, setReply, error, setError, currThreadId, setPrevChats, setNewChat, logout, sessionExpired, openSettings} = useContext(MyContext);
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -62,6 +62,11 @@ function ChatWindow() {
     setIsOpen(!isOpen);
   }
 
+  const handleSettingsClick = () =>{
+    setIsOpen(false);
+    openSettings();
+  }
+
   return (
     <div className="chatWindow">
       <div className="navbar">
@@ -80,7 +85,7 @@ function ChatWindow() {
         isOpen &&
         <div className="dropDown">
             <div className="dropDownItem"> <i className="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
-            <div className="dropDownItem">  <i className="fa-solid fa-gear"></i>  Settings</div>
+            <div className="dropDownItem" onClick={handleSettingsClick}>  <i className="fa-solid fa-gear"></i>  Settings</div>
             <div className="dropDownItem" onClick={logout}>  <i className="fa-solid fa-right-from-bracket"></i> Log out</div>
         </div>
      }
