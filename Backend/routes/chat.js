@@ -1,7 +1,5 @@
 import express from "express";
-// import crypto from "crypto";
 import Thread from "../models/Thread.js";
-// import { threadId } from "worker_threads";
 import getOpenAIAPIResponse from "../utils/openai.js";
 import requireAuth from "../middleware/requireAuth.js";
 import { chatLimiter } from "../middleware/rateLimit.js";
@@ -20,6 +18,11 @@ const UUID_PATTERN =
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 
 const MAX_MESSAGE_LENGTH = 8000;
+
+//how many recent messages are sent to the model. Bounded on purpose: long
+//threads stay cheap and the model is not buried under stale context. The
+//full history is still saved in MongoDB.
+const MAX_CONTEXT_MESSAGES = 12;
 
 router.get("/hello", (req, res) => {
     res.send("Chat router is working!");
@@ -62,8 +65,6 @@ router.post("/test", async (req, res) => {
         });
     }
 });
-
-//get all threads of the logged-in user only
 
 router.get("/thread", async(req , res) => {
     try{
@@ -121,7 +122,7 @@ router.delete("/thread/:threadId", async (req,res) => {
 });
 
 router.post("/chat", async(req, res) =>{
-    const {threadId ,message} = req.body;
+    const {threadId ,message, regenerate} = req.body;
 
     if(
         typeof threadId !== "string" ||
@@ -146,10 +147,25 @@ router.post("/chat", async(req, res) =>{
         //never look a thread up by id alone
         const thread = await Thread.findOne({threadId, userId: req.user.id});
 
-        let newThread;
-        if(!thread){
+        let target;
+        if(regenerate === true){
+            //regenerating never creates a thread: there must be an existing
+            //conversation whose last exchange can be re-answered
+            if(!thread || thread.messages.length === 0){
+                return res.status(404).json({
+                    error: "Nothing to regenerate. Send a message first."
+                });
+            }
+            //drop the assistant reply being replaced. The trailing user
+            //message stays and is answered again.
+            const lastMessage = thread.messages[thread.messages.length - 1];
+            if(lastMessage.role === "assistant"){
+                thread.messages.pop();
+            }
+            target = thread;
+        } else if(!thread){
             //owner always comes from the verified token
-            newThread = new Thread({
+            target = new Thread({
                 threadId,
                 userId: req.user.id,
                 title:message,
@@ -157,11 +173,17 @@ router.post("/chat", async(req, res) =>{
             });
         }  else{
             thread.messages.push({role:"user",content:message});
+            target = thread;
         }
 
-    const assistantReply = await getOpenAIAPIResponse(message);
+    //bounded context: the most recent messages of this conversation
+    //(always ends with the message to answer)
+    const recentMessages = target.messages
+        .slice(-MAX_CONTEXT_MESSAGES)
+        .map((m) => ({ role: m.role, content: m.content }));
 
-    const target = newThread || thread;
+    const assistantReply = await getOpenAIAPIResponse(recentMessages);
+
     target.messages.push({role:"assistant",content:assistantReply});
     target.updatedAt = new Date();
 
@@ -175,6 +197,13 @@ router.post("/chat", async(req, res) =>{
             });
         }
         console.log(err);
+        //the AI provider is down or out of quota — say so, without the
+        //internal error details
+        if(err.upstream){
+            return res.status(502).json({
+                error: "The AI service is currently unavailable. Please try again in a moment."
+            });
+        }
         //never echo the internal error back to the client
         res.status(500).json({error: "Something went wrong. Please try again."});
     }

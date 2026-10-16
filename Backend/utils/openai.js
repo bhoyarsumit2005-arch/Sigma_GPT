@@ -16,7 +16,7 @@ const getGroqApiKeys = () => {
     return [...new Set([...keys, ...extra].filter(Boolean))];
 };
 
-const tryKey = async (message, apiKey) => {
+const tryKey = async (messages, apiKey) => {
     const options = {
         method: "POST",
         headers: {
@@ -25,7 +25,7 @@ const tryKey = async (message, apiKey) => {
         },
         body: JSON.stringify({
             model: GROQ_MODEL,
-            messages: [{ role: "user", content: message }],
+            messages,
             max_tokens: GROQ_MAX_TOKENS
         })
     };
@@ -56,16 +56,26 @@ const tryKey = async (message, apiKey) => {
     return content;
 };
 
-const getOpenAIAPIResponse = async (message) => {
+//messages: an ordered array of { role, content } — the recent conversation
+//history to answer within. The API key never leaves this file.
+const getOpenAIAPIResponse = async (messages) => {
     const keys = getGroqApiKeys();
     if (keys.length === 0) {
-        throw new Error("Missing GROQ_API_KEY in Backend/.env");
+        const err = new Error("Missing GROQ_API_KEY in Backend/.env");
+        err.upstream = true; //misconfiguration, not a client mistake
+        throw err;
+    }
+
+    if (!Array.isArray(messages) || messages.length === 0) {
+        const err = new Error("getOpenAIAPIResponse requires a non-empty messages array");
+        err.upstream = false;
+        throw err;
     }
 
     let lastError = null;
     for (let i = 0; i < keys.length; i++) {
         try {
-            const content = await tryKey(message, keys[i]);
+            const content = await tryKey(messages, keys[i]);
             console.log(`Groq ok: key #${i + 1} of ${keys.length}`);
             return content;
         } catch (err) {
@@ -74,6 +84,8 @@ const getOpenAIAPIResponse = async (message) => {
         }
     }
 
-    throw new Error(`All Groq API keys failed — last error: ${lastError?.message || "unknown"}`);
+    const err = new Error(`All Groq API keys failed — last error: ${lastError?.message || "unknown"}`);
+    err.upstream = true; //lets routes answer 502 instead of a generic 500
+    throw err;
 }
 export default getOpenAIAPIResponse;

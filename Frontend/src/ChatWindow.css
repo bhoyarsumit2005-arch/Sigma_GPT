@@ -96,10 +96,39 @@
     border: 1px solid var(--danger-border);
     color: var(--danger-text);
     border-radius: 12px;
-    padding: 0.7rem 1rem;
+    padding: 0.6rem 1rem;
     font-size: 0.85rem;
     text-align: center;
     backdrop-filter: blur(10px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.retryBtn{
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: inherit;
+    font-size: 0.78rem;
+    color: var(--danger-text);
+    background: transparent;
+    border: 1px solid var(--danger-border);
+    border-radius: 8px;
+    padding: 3px 10px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.retryBtn:hover:not(:disabled){
+    background: var(--danger-bg);
+}
+
+.retryBtn:disabled{
+    opacity: 0.5;
+    cursor: not-allowed;
 }
 
 .chatInput{
@@ -120,7 +149,9 @@
     max-width: 900px;
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    /* the send button stays at the bottom while the textarea grows */
+    align-items: flex-end;
+    gap: 8px;
     padding: 8px 10px;
     box-sizing: border-box;
     border-radius: 20px;
@@ -151,6 +182,27 @@ input::placeholder {
 input:focus{
     outline: none;
 }
+
+/* the composer: auto-growing textarea (see ChatWindow.jsx) */
+.inputBox textarea{
+    width: 100%;
+    border: none;
+    outline: none;
+    background: transparent;
+    padding: 10px 4px 10px 12px;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    font-family: inherit;
+    color: var(--input-text);
+    resize: none;
+    max-height: 160px;
+    overflow-y: auto;
+}
+
+.inputBox textarea::placeholder {
+    color: var(--placeholder);
+}
+
 #submit{
     cursor: pointer;
     height: 40px;
@@ -223,4 +275,34 @@ input:focus{
 .dropDownItem:hover {
     background-color: var(--accent-bg);
     color: var(--text-strong);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 640px) {
+    .navbar span {
+        margin: 0.8rem 1rem;
+    }
+
+    .userIconDiv {
+        margin: 0.8rem 1rem;
+    }
+
+    .dropDown {
+        top: 3.4rem;
+        right: 1rem;
+    }
+
+    .inputBox textarea {
+        font-size: 1rem; /* stops iOS zooming the page on focus */
+    }
+
+    .errorBanner {
+        width: calc(100% - 1rem);
+        font-size: 0.8rem;
+    }
+
+    .info {
+        font-size: 0.7rem;
+        padding: 0.5rem 0.8rem;
+    }
 }
