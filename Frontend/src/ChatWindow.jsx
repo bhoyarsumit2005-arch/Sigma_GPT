@@ -3,16 +3,19 @@ import Chat from "./Chat.jsx";
 import { MyContext } from "./MyContext.jsx";
 import { useContext, useState, useEffect, useRef } from "react";
 import { API_BASE } from "./api.js";
+import { getInitials } from "./theme.js";
 
 function ChatWindow() {
   const {
     prompt, setPrompt, setReply, error, setError,
     currThreadId, prevChats, setPrevChats, setNewChat,
-    logout, sessionExpired, openSettings,
+    logout, sessionExpired, openSettings, user,
   } = useContext(MyContext);
 
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
+  //short-lived note under "Upgrade plan" (see the effect that clears it)
+  const [upgradeNotice, setUpgradeNotice] = useState(false);
   //the request that last failed, so the error banner can offer a real Retry
   const [failedRequest, setFailedRequest] = useState(null);
 
@@ -21,6 +24,10 @@ function ChatWindow() {
   const busyRef = useRef(false);
   const textareaRef = useRef(null);
 
+  //the account menu: icon + dropdown, so outside clicks can be detected
+  const menuRef = useRef(null);
+  const iconBtnRef = useRef(null);
+
   //auto-grow the composer: grow with the text, cap at a comfortable height
   useEffect(() => {
     const el = textareaRef.current;
@@ -28,6 +35,59 @@ function ChatWindow() {
     el.style.height = "0px";
     el.style.height = Math.min(el.scrollHeight, 160) + "px";
   }, [prompt]);
+
+  //close the account menu when a click lands outside it. pointerdown runs
+  //before the click, so the menu is already gone when the new target reacts.
+  //focusout covers Tab: leaving the menu closes it instead of leaving a
+  //stray dropdown over the page.
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const close = () => {
+      setIsOpen(false);
+      setUpgradeNotice(false);
+    };
+
+    const onPointerDown = (e) => {
+      if (menuRef.current && !menuRef.current.contains(e.target)) close();
+    };
+
+    const onFocusOut = (e) => {
+      const next = e.relatedTarget;
+      if (next instanceof Node && menuRef.current && !menuRef.current.contains(next)) {
+        close();
+      }
+    };
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("focusout", onFocusOut);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("focusout", onFocusOut);
+    };
+  }, [isOpen]);
+
+  //Escape closes the menu and hands focus back to the icon
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const onKeyDown = (e) => {
+      if (e.key !== "Escape") return;
+      setIsOpen(false);
+      setUpgradeNotice(false);
+      iconBtnRef.current?.focus();
+    };
+
+    document.addEventListener("keydown", onKeyDown);
+    return () => document.removeEventListener("keydown", onKeyDown);
+  }, [isOpen]);
+
+  //the "coming soon" note dismisses itself so the menu never gets stuck with it
+  useEffect(() => {
+    if (!upgradeNotice) return;
+    const timer = setTimeout(() => setUpgradeNotice(false), 2600);
+    return () => clearTimeout(timer);
+  }, [upgradeNotice]);
 
   //single request path for new messages, retries and regeneration
   const sendRequest = async (message, { regenerate = false, keepUserMessage = false } = {}) => {
@@ -116,12 +176,63 @@ function ChatWindow() {
   };
 
   const handleProfileClick = () => {
-    setIsOpen(!isOpen);
+    setUpgradeNotice(false);
+    setIsOpen((open) => !open);
+  };
+
+  //Upgrade plan has no billing backend yet — say so instead of doing nothing
+  const handleUpgradeClick = () => {
+    setUpgradeNotice(true);
   };
 
   const handleSettingsClick = () => {
     setIsOpen(false);
+    setUpgradeNotice(false);
     openSettings();
+  };
+
+  const handleLogoutClick = () => {
+    setIsOpen(false);
+    setUpgradeNotice(false);
+    logout();
+  };
+
+  //every focusable menu item, in visual order
+  const getMenuItems = () =>
+    Array.from(menuRef.current?.querySelectorAll('[role="menuitem"]') || []);
+
+  //ArrowDown / ArrowUp cycle through the open menu (standard menu pattern)
+  const handleMenuKeyDown = (e) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+
+    const items = getMenuItems();
+    if (!items.length) return;
+    e.preventDefault();
+
+    const index = items.indexOf(document.activeElement);
+    const next =
+      e.key === "ArrowDown"
+        ? (index + 1) % items.length //no focus yet → index -1 → 0
+        : index <= 0
+          ? items.length - 1
+          : index - 1;
+    items[next].focus();
+  };
+
+  //Arrow keys on the icon open the menu (and land on the first item) or,
+  //when it is already open, keep the arrow cycling going.
+  const handleIconKeyDown = (e) => {
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp") return;
+
+    if (isOpen) {
+      handleMenuKeyDown(e);
+      return;
+    }
+
+    e.preventDefault();
+    setIsOpen(true);
+    //the menu renders on this state change; focus it on the next frame
+    requestAnimationFrame(() => getMenuItems()[0]?.focus());
   };
 
   //Enter sends, Shift+Enter inserts a newline. IME composition (e.g. typing
@@ -140,16 +251,58 @@ function ChatWindow() {
           Sigma AI
           <small className="nav-tag">AI Workspace</small>
         </span>
-        <div className="userIconDiv" onClick={handleProfileClick}>
-          <span className="userIcon"><i className="fa-solid fa-user"></i></span>
+        <div className="userIconDiv" ref={menuRef}>
+          <button
+            type="button"
+            ref={iconBtnRef}
+            className="userIcon"
+            onClick={handleProfileClick}
+            onKeyDown={handleIconKeyDown}
+            aria-haspopup="menu"
+            aria-expanded={isOpen}
+            aria-controls="profile-menu"
+            aria-label="Account menu"
+            title="Account menu"
+          >
+            {getInitials(user?.name)}
+          </button>
         </div>
       </div>
 
       {isOpen && (
-        <div className="dropDown">
-          <div className="dropDownItem"> <i className="fa-solid fa-cloud-arrow-up"></i> Upgrade plan</div>
-          <div className="dropDownItem" onClick={handleSettingsClick}> <i className="fa-solid fa-gear"></i> Settings</div>
-          <div className="dropDownItem" onClick={logout}> <i className="fa-solid fa-right-from-bracket"></i> Log out</div>
+        <div
+          className="dropDown"
+          id="profile-menu"
+          role="menu"
+          aria-label="Account menu"
+          onKeyDown={handleMenuKeyDown}
+        >
+          <div className="dropDownHead" role="none">
+            <span className="dropDownAvatar" aria-hidden="true">
+              {getInitials(user?.name)}
+            </span>
+            <span className="dropDownUser">
+              <span className="dropDownName">{user?.name || "Sigma User"}</span>
+              <span className="dropDownEmail">{user?.email || "AI Workspace"}</span>
+            </span>
+          </div>
+
+          <button type="button" className="dropDownItem" role="menuitem" onClick={handleUpgradeClick}>
+            <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Upgrade plan
+          </button>
+          <button type="button" className="dropDownItem" role="menuitem" onClick={handleSettingsClick}>
+            <i className="fa-solid fa-gear" aria-hidden="true"></i> Settings
+          </button>
+          <button type="button" className="dropDownItem danger" role="menuitem" onClick={handleLogoutClick}>
+            <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log out
+          </button>
+
+          {upgradeNotice && (
+            <div className="dropDownNote" role="status">
+              <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
+              Plan upgrades are coming soon.
+            </div>
+          )}
         </div>
       )}
 
