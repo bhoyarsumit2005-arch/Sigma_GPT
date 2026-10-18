@@ -109,6 +109,14 @@
     box-shadow: 0 0 0 3px var(--accent-bg), 0 0 0 1px var(--accent-border);
 }
 
+.userIconImg{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    display: block;
+}
+
 /* chat input */
 
 .errorBanner{
@@ -314,10 +322,18 @@ input:focus{
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     background: var(--grad);
     color: #fff;
     font-size: 13px;
     font-weight: 700;
+}
+
+.dropDownAvatarImg {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
 }
 
 .dropDownUser {
@@ -383,21 +399,6 @@ input:focus{
 .dropDownItem.danger:focus-visible {
     background-color: var(--danger-bg);
     color: var(--danger-text);
-}
-
-.dropDownNote {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-top: 0.4rem;
-    padding: 0.45rem 0.6rem;
-    font-size: 0.75rem;
-    line-height: 1.35;
-    color: var(--text-muted);
-    background: var(--surface-2);
-    border: 1px dashed var(--border-strong);
-    border-radius: 8px;
-    animation: menuIn 0.14s ease-out both;
 }
 
 /* ---------- responsive ---------- */

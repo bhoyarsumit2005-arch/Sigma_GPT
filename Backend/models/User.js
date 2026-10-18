@@ -62,6 +62,14 @@ const userSchema = new mongoose.Schema(
             default: "dark",
         },
 
+        //profile photo as a small base64 data URL (client crops it to 256px
+        //before upload; the route enforces mime + size). "" = initials only.
+        avatar: {
+            type: String,
+            default: "",
+            maxlength: 140000,
+        },
+
         //active login sessions; hidden from normal queries so it can never leak
         sessions: {
             type: [sessionSchema],

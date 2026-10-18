@@ -51,15 +51,14 @@ app.use(cookieParser());
 //overall request ceiling, applied before any route
 app.use("/api", globalLimiter);
 
-//health check — registered before the routers, because the chat router mounts
-//on /api and runs requireAuth on every path it sees
-app.get("/api/ping", (req, res) => {
-    res.status(200).send("pong");
-});
-
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api", chatRoutes);
+
+// Test route
+app.get("/api/ping", (req, res) => {
+    res.status(200).send("pong");
+});
 
 //unknown routes answer JSON, never an HTML error page
 app.use((req, res) => {

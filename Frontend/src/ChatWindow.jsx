@@ -14,8 +14,6 @@ function ChatWindow() {
 
   const [loading, setLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  //short-lived note under "Upgrade plan" (see the effect that clears it)
-  const [upgradeNotice, setUpgradeNotice] = useState(false);
   //the request that last failed, so the error banner can offer a real Retry
   const [failedRequest, setFailedRequest] = useState(null);
 
@@ -24,8 +22,10 @@ function ChatWindow() {
   const busyRef = useRef(false);
   const textareaRef = useRef(null);
 
-  //the account menu: icon + dropdown, so outside clicks can be detected
-  const menuRef = useRef(null);
+  //the account menu lives in two pieces: the icon sits in the navbar while the
+  //dropdown renders as a sibling, so both need their own ref
+  const iconWrapRef = useRef(null);
+  const dropDownRef = useRef(null);
   const iconBtnRef = useRef(null);
 
   //auto-grow the composer: grow with the text, cap at a comfortable height
@@ -37,26 +37,28 @@ function ChatWindow() {
   }, [prompt]);
 
   //close the account menu when a click lands outside it. pointerdown runs
-  //before the click, so the menu is already gone when the new target reacts.
+  //before the click, so the menu is already gone when the new target reacts —
+  //which is exactly why the check must accept both halves of the menu: if a
+  //dropdown item counted as "outside", the menu would unmount on pointerdown
+  //and the item's click would never fire.
   //focusout covers Tab: leaving the menu closes it instead of leaving a
   //stray dropdown over the page.
   useEffect(() => {
     if (!isOpen) return;
 
-    const close = () => {
-      setIsOpen(false);
-      setUpgradeNotice(false);
-    };
+    const close = () => setIsOpen(false);
+
+    //a node counts as inside when it is under the icon or under the dropdown
+    const isInsideMenu = (node) =>
+      node instanceof Node &&
+      (iconWrapRef.current?.contains(node) || dropDownRef.current?.contains(node));
 
     const onPointerDown = (e) => {
-      if (menuRef.current && !menuRef.current.contains(e.target)) close();
+      if (!isInsideMenu(e.target)) close();
     };
 
     const onFocusOut = (e) => {
-      const next = e.relatedTarget;
-      if (next instanceof Node && menuRef.current && !menuRef.current.contains(next)) {
-        close();
-      }
+      if (!isInsideMenu(e.relatedTarget)) close();
     };
 
     document.addEventListener("pointerdown", onPointerDown);
@@ -74,20 +76,12 @@ function ChatWindow() {
     const onKeyDown = (e) => {
       if (e.key !== "Escape") return;
       setIsOpen(false);
-      setUpgradeNotice(false);
       iconBtnRef.current?.focus();
     };
 
     document.addEventListener("keydown", onKeyDown);
     return () => document.removeEventListener("keydown", onKeyDown);
   }, [isOpen]);
-
-  //the "coming soon" note dismisses itself so the menu never gets stuck with it
-  useEffect(() => {
-    if (!upgradeNotice) return;
-    const timer = setTimeout(() => setUpgradeNotice(false), 2600);
-    return () => clearTimeout(timer);
-  }, [upgradeNotice]);
 
   //single request path for new messages, retries and regeneration
   const sendRequest = async (message, { regenerate = false, keepUserMessage = false } = {}) => {
@@ -176,30 +170,22 @@ function ChatWindow() {
   };
 
   const handleProfileClick = () => {
-    setUpgradeNotice(false);
     setIsOpen((open) => !open);
-  };
-
-  //Upgrade plan has no billing backend yet — say so instead of doing nothing
-  const handleUpgradeClick = () => {
-    setUpgradeNotice(true);
   };
 
   const handleSettingsClick = () => {
     setIsOpen(false);
-    setUpgradeNotice(false);
     openSettings();
   };
 
   const handleLogoutClick = () => {
     setIsOpen(false);
-    setUpgradeNotice(false);
     logout();
   };
 
-  //every focusable menu item, in visual order
+  //every focusable menu item, in visual order — they live in the dropdown
   const getMenuItems = () =>
-    Array.from(menuRef.current?.querySelectorAll('[role="menuitem"]') || []);
+    Array.from(dropDownRef.current?.querySelectorAll('[role="menuitem"]') || []);
 
   //ArrowDown / ArrowUp cycle through the open menu (standard menu pattern)
   const handleMenuKeyDown = (e) => {
@@ -251,7 +237,7 @@ function ChatWindow() {
           Sigma AI
           <small className="nav-tag">AI Workspace</small>
         </span>
-        <div className="userIconDiv" ref={menuRef}>
+        <div className="userIconDiv" ref={iconWrapRef}>
           <button
             type="button"
             ref={iconBtnRef}
@@ -264,7 +250,11 @@ function ChatWindow() {
             aria-label="Account menu"
             title="Account menu"
           >
-            {getInitials(user?.name)}
+            {user?.avatar ? (
+              <img className="userIconImg" src={user.avatar} alt="" aria-hidden="true" />
+            ) : (
+              getInitials(user?.name)
+            )}
           </button>
         </div>
       </div>
@@ -273,13 +263,16 @@ function ChatWindow() {
         <div
           className="dropDown"
           id="profile-menu"
+          ref={dropDownRef}
           role="menu"
           aria-label="Account menu"
           onKeyDown={handleMenuKeyDown}
         >
           <div className="dropDownHead" role="none">
             <span className="dropDownAvatar" aria-hidden="true">
-              {getInitials(user?.name)}
+              {user?.avatar
+                ? <img className="dropDownAvatarImg" src={user.avatar} alt="" />
+                : getInitials(user?.name)}
             </span>
             <span className="dropDownUser">
               <span className="dropDownName">{user?.name || "Sigma User"}</span>
@@ -287,22 +280,12 @@ function ChatWindow() {
             </span>
           </div>
 
-          <button type="button" className="dropDownItem" role="menuitem" onClick={handleUpgradeClick}>
-            <i className="fa-solid fa-cloud-arrow-up" aria-hidden="true"></i> Upgrade plan
-          </button>
           <button type="button" className="dropDownItem" role="menuitem" onClick={handleSettingsClick}>
             <i className="fa-solid fa-gear" aria-hidden="true"></i> Settings
           </button>
           <button type="button" className="dropDownItem danger" role="menuitem" onClick={handleLogoutClick}>
             <i className="fa-solid fa-right-from-bracket" aria-hidden="true"></i> Log out
           </button>
-
-          {upgradeNotice && (
-            <div className="dropDownNote" role="status">
-              <i className="fa-solid fa-circle-info" aria-hidden="true"></i>
-              Plan upgrades are coming soon.
-            </div>
-          )}
         </div>
       )}
 

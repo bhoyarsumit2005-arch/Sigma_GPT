@@ -155,7 +155,11 @@ function Sidebar() {
       <div className="profile-card">
 
         <div className="profile-avatar">
-          {getInitials(user?.name)}
+          {user?.avatar ? (
+            <img src={user.avatar} alt="" aria-hidden="true" />
+          ) : (
+            getInitials(user?.name)
+          )}
         </div>
 
         <div className="profile-info">

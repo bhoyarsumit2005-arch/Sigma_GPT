@@ -296,6 +296,110 @@
     background: var(--grad);
     box-shadow: 0 8px 20px rgba(124, 58, 237, 0.3);
     flex-shrink: 0;
+    position: relative;
+    overflow: hidden;
+}
+
+.profile-avatar-lg .avatar-photo {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* camera overlay: the whole avatar is the "change photo" control */
+.avatar-edit {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: inherit;
+    cursor: pointer;
+    background: rgba(8, 11, 18, 0.55);
+    color: #fff;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+}
+
+.avatar-edit i {
+    font-size: 16px;
+}
+
+.profile-avatar-lg:hover .avatar-edit,
+.avatar-edit:focus-within {
+    opacity: 1;
+}
+
+.avatar-edit:focus-within {
+    outline: 2px solid var(--accent-2);
+    outline-offset: -2px;
+}
+
+.profile-avatar-lg.busy .avatar-edit {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* visually hidden but still focusable, so the picker is keyboard reachable */
+.avatar-file {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: 0;
+    opacity: 0;
+    border: none;
+}
+
+.avatar-edit-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.avatar-busy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(8, 11, 18, 0.55);
+    color: #fff;
+    font-size: 17px;
+}
+
+.avatar-remove {
+    display: inline-block;
+    margin-top: 6px;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-family: inherit;
+    font-size: 11.5px;
+    color: var(--danger-text);
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.avatar-remove:hover:not(:disabled) {
+    color: var(--danger);
+}
+
+.avatar-remove:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.avatar-remove:focus-visible {
+    outline: 2px solid var(--accent-border);
+    outline-offset: 2px;
+    border-radius: 4px;
 }
 
 .profile-head h3 {

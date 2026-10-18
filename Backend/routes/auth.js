@@ -21,6 +21,10 @@ const PASSWORD_MIN = 8;
 const PASSWORD_MAX = 72;
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const ALLOWED_THEMES = ["dark", "light", "system"];
+//profile photos arrive as data URLs; only these raster formats are accepted
+const AVATAR_PATTERN = /^data:image\/(jpeg|png|webp);base64,/;
+//decoded image size, not the base64 length
+const AVATAR_MAX_BYTES = 100 * 1024;
 
 //only ever send these fields to the client — never password, never sessions
 function publicUser(user) {
@@ -29,6 +33,7 @@ function publicUser(user) {
         name: user.name,
         email: user.email,
         theme: user.theme || "dark",
+        avatar: user.avatar || "",
     };
 }
 
@@ -266,6 +271,44 @@ router.patch("/profile", requireAuth, async (req, res) => {
             }
 
             updates.theme = body.theme;
+        }
+
+        if (body.avatar !== undefined) {
+            //null or "" removes the photo and the UI falls back to initials
+            if (body.avatar === null || body.avatar === "") {
+                updates.avatar = "";
+            } else {
+                const validType =
+                    typeof body.avatar === "string" &&
+                    AVATAR_PATTERN.test(body.avatar);
+
+                const payload = validType
+                    ? body.avatar.slice(body.avatar.indexOf(",") + 1)
+                    : "";
+
+                //Buffer.from silently drops invalid base64, so check the
+                //alphabet before trusting the decoded length
+                const validEncoding = /^[A-Za-z0-9+/]+={0,2}$/.test(payload);
+
+                let decodedLength = 0;
+                if (validEncoding) {
+                    decodedLength = Buffer.from(payload, "base64").length;
+                }
+
+                if (!validEncoding || decodedLength === 0) {
+                    return res.status(400).json({
+                        error: "Profile photo must be a JPEG, PNG or WebP image.",
+                    });
+                }
+
+                if (decodedLength > AVATAR_MAX_BYTES) {
+                    return res.status(400).json({
+                        error: "Profile photo is too large (100 KB max).",
+                    });
+                }
+
+                updates.avatar = body.avatar;
+            }
         }
 
         if (Object.keys(updates).length === 0) {

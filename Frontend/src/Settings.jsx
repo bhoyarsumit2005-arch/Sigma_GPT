@@ -4,6 +4,7 @@ import "./Settings.css";
 import { MyContext } from "./MyContext.jsx";
 import { apiRequest } from "./api.js";
 import { getInitials, THEME_OPTIONS, applyTheme } from "./theme.js";
+import { avatarFileError, fileToAvatarDataUrl } from "./avatar.js";
 
 const SECTIONS = [
     { id: "profile", label: "Profile", icon: "fa-solid fa-user" },
@@ -71,6 +72,10 @@ function ProfileSection() {
     const [email, setEmail] = useState(user?.email || "");
     const [status, setStatus] = useState(null);
     const [saving, setSaving] = useState(false);
+    const [avatarBusy, setAvatarBusy] = useState(false);
+    //local photo shown while its upload is in flight; cleared either way so a
+    //failed upload falls back to the stored avatar (or initials)
+    const [avatarPreview, setAvatarPreview] = useState("");
 
     useEffect(() => {
         setName(user?.name || "");
@@ -118,15 +123,126 @@ function ProfileSection() {
         }
     }
 
+    //sends one avatar value to the profile route; "" removes the photo
+    async function pushAvatar(dataUrl) {
+        setAvatarPreview(dataUrl || "");
+
+        try {
+            const { response, data } = await apiRequest("/api/auth/profile", {
+                method: "PATCH",
+                body: { avatar: dataUrl },
+            });
+
+            if (response.status === 401) {
+                sessionExpired();
+                return;
+            }
+
+            if (!response.ok) {
+                setStatus({
+                    type: "error",
+                    message: data?.error || "Could not save your photo.",
+                });
+                return;
+            }
+
+            updateUser(data.user);
+            setStatus({
+                type: "success",
+                message: dataUrl ? "Profile photo updated." : "Photo removed.",
+            });
+        } catch {
+            setStatus({
+                type: "error",
+                message: "Network error. Please try again.",
+            });
+        } finally {
+            //drop the preview: on success context now holds the new photo,
+            //on failure the old one comes back
+            setAvatarPreview("");
+            setAvatarBusy(false);
+        }
+    }
+
+    async function handleAvatarPick(event) {
+        const file = event.target.files?.[0];
+        //reset so picking the same file again still fires a change event
+        event.target.value = "";
+
+        if (!file || avatarBusy) return;
+
+        const problem = avatarFileError(file);
+        if (problem) {
+            setStatus({ type: "error", message: problem });
+            return;
+        }
+
+        setStatus(null);
+        setAvatarBusy(true);
+
+        try {
+            const dataUrl = await fileToAvatarDataUrl(file);
+            await pushAvatar(dataUrl);
+        } catch (error) {
+            setStatus({
+                type: "error",
+                message: error?.message || "Could not read that image.",
+            });
+            setAvatarBusy(false);
+        }
+    }
+
+    function removeAvatar() {
+        if (avatarBusy) return;
+        setStatus(null);
+        setAvatarBusy(true);
+        pushAvatar("");
+    }
+
+    const shownAvatar = avatarPreview || user?.avatar || "";
+
     return (
         <section className="settings-panel" aria-labelledby="settings-profile">
             <div className="profile-head">
-                <div className="profile-avatar-lg">
-                    {getInitials(name || user?.name)}
+                <div className={`profile-avatar-lg ${avatarBusy ? "busy" : ""}`}>
+                    {shownAvatar ? (
+                        <img className="avatar-photo" src={shownAvatar} alt="" aria-hidden="true" />
+                    ) : (
+                        <span aria-hidden="true">{getInitials(name || user?.name)}</span>
+                    )}
+
+                    <label className="avatar-edit" title="Change profile photo">
+                        <i className="fa-solid fa-camera" aria-hidden="true"></i>
+                        <span className="avatar-edit-text">Change profile photo</span>
+                        <input
+                            className="avatar-file"
+                            type="file"
+                            accept="image/jpeg,image/png,image/webp"
+                            onChange={handleAvatarPick}
+                            disabled={avatarBusy}
+                        />
+                    </label>
+
+                    {avatarBusy && (
+                        <span className="avatar-busy" aria-hidden="true">
+                            <i className="fa-solid fa-circle-notch fa-spin"></i>
+                        </span>
+                    )}
                 </div>
+
                 <div>
                     <h3 id="settings-profile">{name || "Your profile"}</h3>
                     <small>{email || "No email yet"}</small>
+                    {user?.avatar && (
+                        <button
+                            type="button"
+                            className="avatar-remove"
+                            onClick={removeAvatar}
+                            disabled={avatarBusy}
+                        >
+                            Remove photo
+                        </button>
+                    )}
                 </div>
             </div>
 
