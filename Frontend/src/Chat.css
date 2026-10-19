@@ -346,8 +346,9 @@
     justify-content: space-between;
     gap: 10px;
     padding: 6px 12px;
-    background: rgba(255, 255, 255, 0.04);
-    border-bottom: 1px solid var(--border-soft);
+    /* fixed light-on-dark: code blocks stay dark in both themes */
+    background: var(--code-header);
+    border-bottom: 1px solid var(--code-divider);
 }
 
 .code-lang {
@@ -355,7 +356,7 @@
     font-size: 0.72rem;
     letter-spacing: 0.5px;
     text-transform: lowercase;
-    color: var(--text-muted);
+    color: var(--code-muted);
 }
 
 .code-actions {
@@ -369,9 +370,9 @@
     gap: 6px;
     font-family: inherit;
     font-size: 0.72rem;
-    color: var(--text-muted);
+    color: var(--code-btn-text);
     background: transparent;
-    border: 1px solid var(--border-strong);
+    border: 1px solid var(--code-btn-border);
     border-radius: 8px;
     padding: 3px 9px;
     cursor: pointer;
@@ -379,9 +380,9 @@
 }
 
 .code-btn:hover {
-    color: var(--text-strong);
-    border-color: var(--accent-border);
-    background: var(--accent-bg);
+    color: var(--code-btn-hover-text);
+    border-color: var(--code-btn-hover-text);
+    background: var(--code-btn-hover-bg);
 }
 
 .code-block pre.code-pre {
@@ -395,7 +396,7 @@
     white-space: pre;
     line-height: 1.55;
     font-size: 0.85em;
-    color: #e6edf3;
+    color: var(--code-text);
 }
 
 .hljs {

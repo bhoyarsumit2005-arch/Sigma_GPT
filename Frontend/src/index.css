@@ -22,6 +22,19 @@
     --menu-bg: rgba(13, 17, 25, 0.95);
     --code-bg: #05070b;
 
+    /* Code blocks render on a dark surface in BOTH themes (the highlight.js
+       theme is dark), so their toolbar uses fixed light-on-dark colors instead
+       of the themeable text/border tokens. Defined once here; light mode does
+       not override them. */
+    --code-header: rgba(255, 255, 255, 0.05);
+    --code-divider: rgba(255, 255, 255, 0.10);
+    --code-text: #e6edf3;
+    --code-muted: #9aa4b2;
+    --code-btn-text: #c9d1d9;
+    --code-btn-border: rgba(255, 255, 255, 0.16);
+    --code-btn-hover-text: #ffffff;
+    --code-btn-hover-bg: rgba(255, 255, 255, 0.10);
+
     /* borders */
     --border: rgba(255, 255, 255, 0.09);
     --border-soft: rgba(255, 255, 255, 0.06);
@@ -78,37 +91,43 @@
     --auth-bg: #eef0f7;
     --auth-glow-1: radial-gradient(circle at 12% 8%, rgba(124, 58, 237, 0.14), transparent 45%);
     --auth-glow-2: radial-gradient(circle at 88% 92%, rgba(6, 182, 212, 0.14), transparent 45%);
-    --surface: rgba(255, 255, 255, 0.92);
-    --surface-2: rgba(15, 18, 35, 0.035);
-    --surface-3: rgba(15, 18, 35, 0.05);
+    --surface: rgba(255, 255, 255, 0.94);
+    --surface-2: rgba(15, 18, 35, 0.045);
+    --surface-3: rgba(15, 18, 35, 0.06);
     --surface-solid: #ffffff;
-    --nav-bg: rgba(255, 255, 255, 0.8);
+    --nav-bg: rgba(255, 255, 255, 0.82);
     --menu-bg: rgba(255, 255, 255, 0.98);
     /* code blocks stay dark in both themes: the highlight.js theme is a dark one */
     --code-bg: #0d1117;
 
-    --border: rgba(15, 18, 35, 0.10);
-    --border-soft: rgba(15, 18, 35, 0.08);
-    --border-strong: rgba(15, 18, 35, 0.14);
-    --input-border: rgba(15, 18, 35, 0.16);
+    --border: rgba(15, 18, 35, 0.12);
+    --border-soft: rgba(15, 18, 35, 0.09);
+    --border-strong: rgba(15, 18, 35, 0.16);
+    --input-border: rgba(15, 18, 35, 0.18);
 
     --text: #1f2333;
     --text-strong: #12141f;
     --text-2: #3c4152;
-    --text-muted: #626879;
-    --text-faint: #838a9c;
+    --text-muted: #5b6172;
+    --text-faint: #7b8294;
     --input-text: #12141f;
     --placeholder: #8a90a2;
 
+    /* accents are darkened so they keep enough contrast on light surfaces */
+    --accent-soft: #6d28d9;
+    --accent-pale: #6d28d9;
     --accent-bg: rgba(124, 58, 237, 0.10);
     --accent-border: rgba(124, 58, 237, 0.35);
-    --accent-pale: #6d28d9;
-    --grad-text: linear-gradient(135deg, #7c3aed, #06b6d4);
+    --cyan: #0e7490;
+    --cyan-soft: #0891b2;
+    --grad-text: linear-gradient(135deg, #7c3aed, #0891b2);
 
     --hover: rgba(15, 18, 35, 0.05);
+    --danger: #dc2626;
     --danger-text: #b91c1c;
     --danger-bg: rgba(239, 68, 68, 0.08);
     --danger-border: rgba(239, 68, 68, 0.30);
+    --success: #059669;
     --success-text: #047857;
     --success-bg: rgba(16, 185, 129, 0.10);
     --success-border: rgba(16, 185, 129, 0.35);
